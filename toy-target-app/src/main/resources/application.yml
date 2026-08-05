@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: toy-target-app
+  kafka:
+    bootstrap-servers: localhost:9092
+
+incident:
+  alerts-topic: incident-alerts
+  error-rate-threshold: 0.3
