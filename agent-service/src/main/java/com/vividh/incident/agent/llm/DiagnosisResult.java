@@ -11,23 +11,23 @@ public class DiagnosisResult {
         MAX_ITERATIONS_EXCEEDED
     }
 
-    private final Status diagnosis;
-    private final String status;
+    private final String diagnosis;
+    private final Status status;
 
-    DiagnosisResult(Status diagnosis, String status) {
+    DiagnosisResult(String diagnosis, Status status) {
         this.diagnosis = diagnosis;
         this.status = status;
     }
 
     public static DiagnosisResult success(String diagnosis) {
-        return new DiagnosisResult(Status.SUCCESS, diagnosis);
+        return new DiagnosisResult(diagnosis, Status.SUCCESS);
     }
 
     public static DiagnosisResult apiError() {
-        return new DiagnosisResult(Status.API_ERROR, null);
+        return new DiagnosisResult(null, Status.API_ERROR);
     }
 
     public static DiagnosisResult maxIterationsExceeded() {
-        return new DiagnosisResult(Status.MAX_ITERATIONS_EXCEEDED, null);
+        return new DiagnosisResult(null, Status.MAX_ITERATIONS_EXCEEDED);
     }
 }

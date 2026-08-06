@@ -17,32 +17,26 @@ import java.time.Instant;
 import java.util.Map;
 
 @SpringBootApplication
-public class AgentServiceApplication implements CommandLineRunner {
+public class AgentServiceApplication {
 
-    @Autowired
-    ClaudeService claudeService;
-
-    @Autowired
-    DiagnosticAgent diagnosticAgent;
-
-    AlertEvent alertEvent = new AlertEvent(
-            "toy-target-app",
-            "critical",
-            "error_rate",
-            0.42,
-            0.05,
-            Instant.now(),
-            Map.of("endpoint", "/api/orders", "instance", "toy-target-app-1")
-    );
+//    @Autowired
+//    ClaudeService claudeService;
+//
+//    @Autowired
+//    DiagnosticAgent diagnosticAgent;
+//
+//    AlertEvent alertEvent = new AlertEvent(
+//            "toy-target-app",
+//            "critical",
+//            "error_rate",
+//            0.42,
+//            0.05,
+//            Instant.now(),
+//            Map.of("endpoint", "/api/orders", "instance", "toy-target-app-1")
+//    );
 
     public static void main(String[] args) {
         SpringApplication.run(AgentServiceApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        DiagnosisResult result = diagnosticAgent.diagnose(alertEvent);
-        System.out.println(result.getDiagnosis() + ": " + result.getStatus());
     }
 
     // Next session: a Kafka listener consuming AlertEvent from
