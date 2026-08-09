@@ -2,10 +2,7 @@ package com.vividh.incident.agent.llm;
 
 import com.vividh.incident.agent.event.AlertEvent;
 import com.vividh.incident.agent.kafka.AlertListener;
-import com.vividh.incident.agent.llm.dto.Content;
-import com.vividh.incident.agent.llm.dto.Message;
-import com.vividh.incident.agent.llm.dto.MessageResponse;
-import com.vividh.incident.agent.llm.dto.ToolResultBlock;
+import com.vividh.incident.agent.llm.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,6 +47,17 @@ public class DiagnosticAgent {
             Content block = toolUseBlock.get();
             String toolName = block.getName();
             Map<String, Object> toolInput = block.getInput();
+
+            if (toolName.equals("propose_remediation")) {
+                String serviceName = (String) toolInput.get("service_name");
+                String reasoning = (String) toolInput.get("reasoning");
+                String action = (String) toolInput.get("action");
+                RemediationProposal.Action parsedAction = RemediationProposal.Action.valueOf(action);
+                RemediationProposal proposal = RemediationProposal.of(parsedAction, serviceName, reasoning);
+
+                return DiagnosisResult.remediationProposal(proposal);
+
+            }
             String toolUseId = block.getId();
 
             String toolResult = executeTool(toolName, toolInput);
@@ -67,8 +75,9 @@ public class DiagnosticAgent {
         String metric = "Metric: " + event.metric();
         String value = "Value: " + event.value();
         String threshold = "Threshold: " + event.threshold();
+        String remediate = "Proposing a remediation is an available next step.";
 
-        return start + source + ", " + metric + ", " + value + ", " + threshold + ". " + end;
+        return start + source + ", " + metric + ", " + value + ", " + threshold + ". " + end + System.lineSeparator() + remediate;
     }
 
     private String executeTool(String toolName, Map<String, Object> toolInput) {

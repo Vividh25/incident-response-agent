@@ -49,7 +49,7 @@ public class ClaudeService {
                 MODEL,
                 1024,
                 messages,
-                List.of(ToolDefinitions.GET_SERVICE_HEALTH),
+                List.of(ToolDefinitions.GET_SERVICE_HEALTH, ToolDefinitions.PROPOSE_REMEDIATION),
                 new Thinking("disabled")
         );
 

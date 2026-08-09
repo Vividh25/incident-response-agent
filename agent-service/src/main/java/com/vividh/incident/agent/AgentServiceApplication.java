@@ -17,26 +17,40 @@ import java.time.Instant;
 import java.util.Map;
 
 @SpringBootApplication
-public class AgentServiceApplication {
+public class AgentServiceApplication implements CommandLineRunner {
 
-//    @Autowired
-//    ClaudeService claudeService;
-//
-//    @Autowired
-//    DiagnosticAgent diagnosticAgent;
-//
-//    AlertEvent alertEvent = new AlertEvent(
-//            "toy-target-app",
-//            "critical",
-//            "error_rate",
-//            0.42,
-//            0.05,
-//            Instant.now(),
-//            Map.of("endpoint", "/api/orders", "instance", "toy-target-app-1")
-//    );
+    @Autowired
+    ClaudeService claudeService;
+
+    @Autowired
+    DiagnosticAgent diagnosticAgent;
+
+    AlertEvent alertEvent = new AlertEvent(
+            "toy-target-app",
+            "critical",
+            "error_rate",
+            0.42,
+            0.05,
+            Instant.now(),
+            Map.of("endpoint", "/api/orders", "instance", "toy-target-app-1")
+    );
 
     public static void main(String[] args) {
         SpringApplication.run(AgentServiceApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        DiagnosisResult result = diagnosticAgent.diagnose(alertEvent);
+
+        if (result.getStatus() == DiagnosisResult.Status.REMEDIATION_PROPOSAL) {
+            var proposal = result.getProposal();
+            System.out.println("PROPOSED: " + proposal.getAction() + "on " + proposal.getServiceName());
+            System.out.println("REASONING: " + proposal.getReasoning());
+        } else {
+            System.out.println(result.getDiagnosis() + ": " + result.getStatus());
+        }
+
     }
 
     // Next session: a Kafka listener consuming AlertEvent from
