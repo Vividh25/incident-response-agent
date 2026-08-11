@@ -1,5 +1,6 @@
 package com.vividh.incident.agent.kafka;
 
+import com.vividh.incident.agent.diagnosis.ApprovalStore;
 import com.vividh.incident.agent.event.AlertEvent;
 import com.vividh.incident.agent.diagnosis.DiagnosisResult;
 import com.vividh.incident.agent.diagnosis.DiagnosticAgent;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -20,6 +22,7 @@ public class AlertListener {
 
     private static final Logger log = LoggerFactory.getLogger(AlertListener.class);
     private final DiagnosticAgent diagnosticAgent;
+    private final ApprovalStore approvalStore;
     private final ConcurrentHashMap<String, Instant> alertMap = new ConcurrentHashMap<>();
     private static final Duration COOLDOWN = Duration.ofMinutes(2);
 
@@ -52,7 +55,12 @@ public class AlertListener {
             log.error("Failed to get diagnosis for {}", event.source());
         }
         else if (result.getStatus() == DiagnosisResult.Status.REMEDIATION_PROPOSAL){
+            UUID id = approvalStore.addApproval(result.getProposal());
+            log.info("Approval added to store. ID: {}", id);
+        }
 
+        else if (result.getStatus() == DiagnosisResult.Status.MAX_ITERATIONS_EXCEEDED){
+            log.error("Maximum iterations exceeded for {}", event.source());
         }
     }
 }

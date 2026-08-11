@@ -1,5 +1,6 @@
 package com.vividh.incident.agent.diagnosis;
 
+import com.vividh.incident.agent.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -31,7 +32,7 @@ public class ApprovalStore {
         // from multiple REST requests approving/rejecting the same id.
         return map.compute(id, (key, currentApproval) -> {
             if (currentApproval == null) {
-                throw new NoSuchElementException("No approval found with the id: " + id);
+                throw new ResourceNotFoundException("No approval found with the id: " + id);
             }
             return new Approval(currentApproval.serviceName(), currentApproval.action(), currentApproval.reasoning(), newStatus);
         });
