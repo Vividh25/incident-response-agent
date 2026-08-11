@@ -1,9 +1,9 @@
 package com.vividh.incident.agent;
 
 import com.vividh.incident.agent.event.AlertEvent;
+import com.vividh.incident.agent.diagnosis.DiagnosisResult;
+import com.vividh.incident.agent.diagnosis.DiagnosticAgent;
 import com.vividh.incident.agent.llm.ClaudeService;
-import com.vividh.incident.agent.llm.DiagnosisResult;
-import com.vividh.incident.agent.llm.DiagnosticAgent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.vividh.incident.agent.llm;
 
-import com.vividh.incident.agent.llm.dto.RemediationProposal;
+import com.vividh.incident.agent.diagnosis.RemediationProposal;
 import com.vividh.incident.agent.llm.dto.Tool;
 
 import java.util.Arrays;

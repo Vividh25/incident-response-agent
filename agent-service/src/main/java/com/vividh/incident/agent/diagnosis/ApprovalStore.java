@@ -1,6 +1,5 @@
-package com.vividh.incident.agent.llm;
+package com.vividh.incident.agent.diagnosis;
 
-import com.vividh.incident.agent.llm.dto.RemediationProposal;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

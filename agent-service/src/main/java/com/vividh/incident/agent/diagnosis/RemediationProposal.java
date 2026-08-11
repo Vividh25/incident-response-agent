@@ -1,4 +1,4 @@
-package com.vividh.incident.agent.llm.dto;
+package com.vividh.incident.agent.diagnosis;
 
 import lombok.Getter;
 

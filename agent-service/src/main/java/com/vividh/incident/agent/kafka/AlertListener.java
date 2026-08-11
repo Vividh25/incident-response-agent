@@ -1,8 +1,8 @@
 package com.vividh.incident.agent.kafka;
 
 import com.vividh.incident.agent.event.AlertEvent;
-import com.vividh.incident.agent.llm.DiagnosisResult;
-import com.vividh.incident.agent.llm.DiagnosticAgent;
+import com.vividh.incident.agent.diagnosis.DiagnosisResult;
+import com.vividh.incident.agent.diagnosis.DiagnosticAgent;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +51,8 @@ public class AlertListener {
             log.error("API ERROR");
             log.error("Failed to get diagnosis for {}", event.source());
         }
-        else {
-            log.info("Maximum iterations exceeded for {}", event.source());
+        else if (result.getStatus() == DiagnosisResult.Status.REMEDIATION_PROPOSAL){
+
         }
     }
 }
