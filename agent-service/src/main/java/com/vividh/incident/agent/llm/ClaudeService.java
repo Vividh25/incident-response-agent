@@ -3,6 +3,7 @@ package com.vividh.incident.agent.llm;
 import com.vividh.incident.agent.llm.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
@@ -11,12 +12,16 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ClaudeService {
 
     private static final String MODEL = "claude-sonnet-5";
 
     private final RestClient anthropicClient;
+
+    public ClaudeService(@Qualifier("anthropicRestClient") RestClient anthropicClient) {
+        this.anthropicClient = anthropicClient;
+    }
 
     public String sendMessage(String userPrompt) {
         MessageResponse response = send(List.of(new Message("user", userPrompt)));

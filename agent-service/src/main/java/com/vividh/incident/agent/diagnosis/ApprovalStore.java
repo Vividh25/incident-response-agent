@@ -1,13 +1,17 @@
 package com.vividh.incident.agent.diagnosis;
 
 import com.vividh.incident.agent.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class ApprovalStore {
+
+    private final RemediationExecutor remediationExecutor;
 
     public enum ApprovalStatus {
         PENDING,
@@ -30,12 +34,18 @@ public class ApprovalStore {
         // compute() makes the read-modify-write atomic per key, unlike a
         // separate get()+put() - important once this is called concurrently
         // from multiple REST requests approving/rejecting the same id.
-        return map.compute(id, (key, currentApproval) -> {
+        Approval updatedApproval = map.compute(id, (key, currentApproval) -> {
             if (currentApproval == null) {
                 throw new ResourceNotFoundException("No approval found with the id: " + id);
             }
             return new Approval(currentApproval.serviceName(), currentApproval.action(), currentApproval.reasoning(), newStatus);
         });
+
+        if (newStatus == ApprovalStatus.APPROVED) {
+            remediationExecutor.execute(updatedApproval);
+        }
+
+        return updatedApproval;
     }
 
     public List<Approval> listPendingApprovals() {
@@ -48,7 +58,7 @@ public class ApprovalStore {
     public Approval getApprovalById(UUID id) {
         Approval approval = map.get(id);
         if (approval == null) {
-            throw new NoSuchElementException("No approval found with id: " + id);
+            throw new ResourceNotFoundException("No approval found with id: " + id);
         }
         return approval;
     }
